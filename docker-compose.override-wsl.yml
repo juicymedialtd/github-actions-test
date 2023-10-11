@@ -1,0 +1,7 @@
+# Sets the correct user for WSL2 deployments
+
+version: '3'
+
+services:
+  wordpress:
+    user: "1000:1000"

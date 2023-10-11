@@ -1,0 +1,18 @@
+// Packages
+@use "normalize-css";
+
+// Base stuff
+@use "base/custom-properties";
+@use "base/base";
+@use "base/fonts";
+@use "base/typography";
+
+// Layout-related sections
+@use "layout/navigation";
+@use "layout/footer";
+
+// Components
+// @use 'components/example';
+
+// Page-specific styles
+// @use 'pages/example';

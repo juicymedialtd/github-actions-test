@@ -1,0 +1,18 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "extends": ["airbnb-base", "plugin:jsdoc/recommended", "plugin:compat/recommended", "prettier"],
+  "parserOptions": {
+    "parser": "@babel/eslint-parser",
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "globals": {
+    "$": "readonly"
+  },
+  "settings": {
+    "polyfills": []
+  }
+}

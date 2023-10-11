@@ -1,0 +1,5 @@
+.idea/
+/public
+docker-compose.override.yml
+.DS_Store
+*:Zone.Identifier

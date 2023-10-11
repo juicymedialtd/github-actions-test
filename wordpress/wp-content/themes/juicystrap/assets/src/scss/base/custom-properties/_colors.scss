@@ -1,0 +1,13 @@
+@use "sass:color";
+
+$juicystrap-blue: #00f;
+$juicystrap-red: #f00;
+
+:root {
+  --primary: #{$juicystrap-blue};
+  --primary-hover: #{color.scale($juicystrap-blue, $blackness: 20%)};
+  --primary-active: #{color.scale($juicystrap-blue, $blackness: 30%)};
+  --secondary: #{$juicystrap-red};
+  --secondary-hover: #{color.scale($juicystrap-red, $saturation: -10%)};
+  --secondary-active: #{color.scale($juicystrap-red, $saturation: -20%)};
+}

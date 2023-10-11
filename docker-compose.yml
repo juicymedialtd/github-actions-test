@@ -1,0 +1,56 @@
+version: '3'
+services:
+  wordpress:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - WITH_XDEBUG=false
+    env_file: ./.docker/.env
+    restart: unless-stopped
+    platform: linux/amd64
+    depends_on:
+      - db
+    ports:
+      - "32080:80"
+    volumes:
+      - wordpress:/var/www/html
+      - ./wordpress/wp-config.php:/var/www/html/wp-config.php
+      - ./wordpress/.htaccess:/var/www/html/.htaccess
+      - ./wordpress/wp-content:/var/www/html/wp-content
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_ROOT_PASSWORD=wordpress
+    ports:
+      - "32081:3306"
+    volumes:
+      - ./.docker/db-entrypoint:/docker-entrypoint-initdb.d
+      - ./.docker/.mysql:/var/lib/mysql
+
+  wp-cli:
+    image: wordpress:cli-php8.2
+    env_file: ./.docker/.env
+    depends_on:
+      - db
+      - wordpress
+    user: "33:33"
+    volumes:
+      - wordpress:/var/www/html
+      - ./wordpress/wp-config.php:/var/www/html/wp-config.php
+      - ./wordpress/.htaccess:/var/www/html/.htaccess
+      - ./wordpress/wp-content:/var/www/html/wp-content
+    profiles:
+      - wp-cli
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    restart: unless-stopped
+    ports:
+      - "32082:8025" # web ui
+
+volumes:
+  wordpress:

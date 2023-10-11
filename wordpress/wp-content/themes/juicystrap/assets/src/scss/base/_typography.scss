@@ -1,0 +1,104 @@
+@use "../abstracts/mixins";
+@use "../abstracts/variables/breakpoints";
+
+html {
+  text-size-adjust: none; // stylelint-disable-line plugin/no-unsupported-browser-features
+  font: 0.85em var(--body-font-family);
+
+  @supports (font: -apple-system-body) and (text-size-adjust: none) {
+    --font-size: 16;
+
+    font: -apple-system-body !important; // stylelint-disable-line font-family-no-missing-generic-family-keyword
+    // stylelint-disable-next-line plugin/no-unsupported-browser-features
+    text-size-adjust: calc(
+      var(--font-size) / 17 * 100%
+    ) !important; // Set the preferred font size based on the default dynamic type size (17px)
+  }
+
+  @media screen and (min-width: breakpoints.$md) {
+    font-size: 1em;
+  }
+}
+
+body {
+  word-break: break-word;
+  hyphens: auto;
+
+  @media screen and (min-width: breakpoints.$xs) {
+    word-break: normal;
+    hyphens: unset;
+  }
+}
+
+/**
+ * Generate h1, .h1, h2, .h2 ... etc.
+ */
+@for $i from 1 through 4 {
+  h#{$i},
+  .h#{$i} {
+    font-weight: var(--heading-font-weight);
+    font-family: var(--heading-font-family);
+    line-height: var(--heading-font-line-height);
+  }
+}
+
+@for $i from 1 through 6 {
+  h#{$i},
+  .h#{$i} {
+    margin-top: var(--h#{$i}-top-margin);
+    margin-bottom: var(--h#{$i}-bottom-margin);
+    font-size: var(--h#{$i}-font-size);
+  }
+}
+
+p,
+.p {
+  margin-top: 0;
+  margin-bottom: 1em;
+  font-weight: normal;
+  font-size: 1em;
+  font-family: var(--body-font-family);
+}
+
+a {
+  color: var(--link-color);
+  text-decoration: var(--link-text-decoration);
+
+  @include mixins.on-event {
+    color: var(--link-color-hover);
+    text-decoration: var(--link-text-decoration-hover);
+  }
+}
+
+.text-small,
+small {
+  font-size: var(--font-size-smallest);
+}
+
+.has-small-font-size {
+  font-size: var(--font-size-small) !important;
+}
+
+.has-medium-font-size {
+  font-size: var(--font-size-medium) !important;
+}
+
+.has-large-font-size {
+  font-size: var(--font-size-large) !important;
+}
+
+.has-x-large-font-size {
+  font-size: var(--font-size-x-large) !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+blockquote p::before {
+  content: "\201C";
+}
+
+blockquote p::after {
+  content: "\201D";
+}

@@ -1,0 +1,22 @@
+**/.gitignore
+**/.gitkeep
+**/node_modules
+**/.DS_Store
+**/*:Zone.Identifier
+wordpress/wp-content/debug.log
+wordpress/wp-content/wflogs
+wordpress/wp-content/uploads
+
+# Theme - add any files used only for development
+wordpress/wp-content/themes/juicystrap/node_modules
+wordpress/wp-content/themes/juicystrap/assets/src
+wordpress/wp-content/themes/juicystrap/.eslintcache
+wordpress/wp-content/themes/juicystrap/.babelrc
+wordpress/wp-content/themes/juicystrap/.browserslistrc
+wordpress/wp-content/themes/juicystrap/.eslintrc
+wordpress/wp-content/themes/juicystrap/.stylelintignore
+wordpress/wp-content/themes/juicystrap/.npmrc
+wordpress/wp-content/themes/juicystrap/webpack.mix.js
+wordpress/wp-content/themes/juicystrap/package-lock.json
+wordpress/wp-content/themes/juicystrap/package.json
+wordpress/wp-content/themes/juicystrap/.stylelintrc.js

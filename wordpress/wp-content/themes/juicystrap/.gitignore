@@ -1,0 +1,5 @@
+assets/dist
+node_modules
+vendor
+!assets/src/**/vendor
+.eslintcache
