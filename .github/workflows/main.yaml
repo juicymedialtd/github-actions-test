@@ -1,0 +1,159 @@
+name: CI/CD Workflow
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{github.repository}}
+  AWS_DEFAULT_REGION: 'eu-west-2'
+  ECS_CLUSTER: 'wordpress-terraform-dev'
+  ECS_SERVICE: 'wordpress-terraform-dev'
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          cd ./wordpress/wp-content/themes/juicystrap
+          npm install
+        artifacts:
+          paths:
+            - ./wordpress/wp-content/themes/juicystrap/node_modules
+          expire_in: 1 days
+          if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
+
+  build-assets:
+    runs-on: ubuntu-latest
+    needs: npm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build assets
+        run: |
+          cd ./wordpress/wp-content/themes/juicystrap
+          npm run production
+        artifacts:
+          paths:
+            - ./wordpress/wp-content/themes/juicystrap/assets/dist
+          expire_in: 1 days
+          if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
+
+  prettier:
+    runs-on: ubuntu-latest
+    needs: npm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run Prettier
+        run: |
+          cd ./wordpress/wp-content/themes/juicystrap
+          npm run lint:prettier
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
+
+  eslint:
+    runs-on: ubuntu-latest
+    needs: npm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run ESLint
+        run: |
+          cd ./wordpress/wp-content/themes/juicystrap
+          npm run lint:js
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
+
+  stylelint:
+    runs-on: ubuntu-latest
+    needs: npm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run StyleLint
+        run: |
+          cd ./wordpress/wp-content/themes/juicystrap
+          npm run lint:style
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
+
+  build-docker:
+    runs-on: ubuntu-latest
+    needs: build-assets
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker/setup-docker@v1
+
+      - name: Build and push Docker image
+        run: |
+          docker login -u ${{ github.actor }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ env.REGISTRY }}
+          docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.event_name == 'push' ? github.sha : github.ref_name }}" .
+          docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-docker
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.ROLE_ARN }}
+          role-session-name: samplerolesession
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Deploy to AWS ECS
+        run: |
+          aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --force-new-deployment --no-cli-pager
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event_name != 'delete')
+
+# Define job-level rules
+.jobs-rules: &jobs-rules
+  if: >
+    github.event_name == 'push' ||
+    (
+      github.event_name == 'pull_request' &&
+      (
+        github.event.action == 'closed' ||
+        (
+          github.event.action == 'opened' &&
+          (
+            !startsWith(github.event.pull_request.title, 'WIP:') &&
+            !startsWith(github.event.pull_request.title, 'Draft:')
+          )
+        )
+      )
+    )
+
+# Define deployment rules
+.deploy-rules: &deploy-rules
+  if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event_name != 'delete')
+
+# Apply rules to jobs
+jobs:
+  npm:
+    <<: *jobs-rules
+
+
