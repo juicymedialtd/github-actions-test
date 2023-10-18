@@ -151,9 +151,5 @@ jobs:
 .deploy-rules: &deploy-rules
   if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event_name != 'delete')
 
-# Apply rules to jobs
-jobs:
-  npm:
-    <<: *jobs-rules
 
 
