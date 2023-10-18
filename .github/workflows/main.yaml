@@ -97,7 +97,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker login -u ${{ github.actor }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ env.REGISTRY }}
-          docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ if eq(github.event_name, 'push') }}${{ github.sha }}{{ else }}${{ github.ref_name }}{{ endif }}" .
+          docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" .
           docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
 
