@@ -31,11 +31,6 @@ jobs:
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
           npm install
-        artifacts:
-          paths:
-            - ./wordpress/wp-content/themes/juicystrap/node_modules
-          expire_in: 1 days
-          if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
 
   build-assets:
     runs-on: ubuntu-latest
@@ -48,11 +43,6 @@ jobs:
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
           npm run production
-        artifacts:
-          paths:
-            - ./wordpress/wp-content/themes/juicystrap/assets/dist
-          expire_in: 1 days
-          if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
 
   prettier:
     runs-on: ubuntu-latest
