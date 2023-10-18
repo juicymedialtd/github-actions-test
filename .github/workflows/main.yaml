@@ -6,6 +6,7 @@ env:
   AWS_DEFAULT_REGION: 'eu-west-2'
   ECS_CLUSTER: 'wordpress-terraform-dev'
   ECS_SERVICE: 'wordpress-terraform-dev'
+  
 
 on:
   push:
@@ -96,7 +97,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker login -u ${{ github.actor }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ env.REGISTRY }}
-          docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.event_name == 'push' ? github.sha : github.ref_name }}" .
+          docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ if eq(github.event_name, 'push') }}${{ github.sha }}{{ else }}${{ github.ref_name }}{{ endif }}" .
           docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
 
@@ -140,6 +141,4 @@ jobs:
 # Define deployment rules
 .deploy-rules: &deploy-rules
   if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event_name != 'delete')
-
-
 
