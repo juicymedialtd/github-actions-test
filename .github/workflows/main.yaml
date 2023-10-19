@@ -6,7 +6,6 @@ env:
   AWS_DEFAULT_REGION: 'eu-west-2'
   ECS_CLUSTER: 'wordpress-terraform-dev'
   ECS_SERVICE: 'wordpress-terraform-dev'
-  
 
 on:
   push:
@@ -48,7 +47,7 @@ jobs:
       - name: Build assets
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
-          npm run production
+          npx mix --production
 
   prettier:
     runs-on: ubuntu-latest
