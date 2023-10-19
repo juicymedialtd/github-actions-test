@@ -22,9 +22,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Remove node_modules
-        run: rm -rf node_modules
-
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
@@ -33,6 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
+          rm -rf node_modules
           npm install
 
   build-assets:
