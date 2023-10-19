@@ -40,6 +40,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Print Versions
+        run: |
+          node --version
+          npm --version
+
       - name: Build assets
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
