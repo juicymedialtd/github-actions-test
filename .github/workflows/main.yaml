@@ -32,6 +32,7 @@ jobs:
           cd ./wordpress/wp-content/themes/juicystrap
           rm -rf node_modules
           npm install
+          npm run production
 
   build-assets:
     runs-on: ubuntu-latest
@@ -42,11 +43,6 @@ jobs:
 
       - name: Print Directory
         run: ls
-
-      - name: Build assets
-        run: |
-          cd ./wordpress/wp-content/themes/juicystrap
-          npm run production
 
   prettier:
     runs-on: ubuntu-latest
