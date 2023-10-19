@@ -42,10 +42,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Print Versions
-        run: |
-          node --version
-          npm --version
+      - name: Print Directory
+        run: ls
 
       - name: Build assets
         run: |
