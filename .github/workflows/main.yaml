@@ -91,13 +91,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Echo refs
+        run: echo "${{ github.ref }}"
+
       - name: Set up Docker
         uses: docker/setup-docker@v1
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image in staging
         run: |
           docker login -u ${{ github.actor }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ env.REGISTRY }}
-          docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" .
+          docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" . --platform linux/amd64
+          if [ "ADD_ENVIRONMENT_HERE" == "production" ]; then docker tag "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:ADD_COMMIT_TAG_HERE" "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"; fi
           docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
 
