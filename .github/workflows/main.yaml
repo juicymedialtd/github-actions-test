@@ -27,12 +27,26 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies and build assets
+      - name: Install dependencies
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
           rm -rf node_modules
           npm install
-          npm run production
+
+  build-assets:
+    runs-on: ubuntu-latest
+    needs: npm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          cd ./wordpress/wp-content/themes/juicystrap
+          npm install
+
+      - name: Build assets
+        run: npm run production
 
   prettier:
     runs-on: ubuntu-latest
@@ -44,7 +58,6 @@ jobs:
       - name: Run Prettier
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
-          npm install
           npm run lint:prettier
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
 
