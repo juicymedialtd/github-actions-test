@@ -44,6 +44,7 @@ jobs:
       - name: Run Prettier
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
+          npm install
           npm run lint:prettier
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
 
@@ -80,13 +81,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: Echo refs
-      #   run: |
-      #     echo "${{ github.ref }}"
-      #     exit 1 
+      - name: Echo refs
+        run: |
+          echo "${{ github.ref }}"
+          exit 1 
 
-      - name: Set up Docker
-        uses: docker/setup-docker@v1
+      # Old
+      # - name: Set up Docker
+      #   uses: docker/setup-docker@v1
+
+      # Follow this guide on logging in with docker https://docs.github.com/en/actions/publishing-packages/publishing-docker-images#publishing-images-to-github-packages
+      # Can also look at these
+        # https://docs.docker.com/build/ci/github-actions/
+        # https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action
 
       - name: Build and push Docker image in staging
         run: |
