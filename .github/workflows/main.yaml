@@ -153,13 +153,19 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      # - name: Build and push Docker image
+      #   uses: docker/build-push-action@v1
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
+
       - name: Build and push Docker image
-        uses: docker/build-push-action@v1
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+        run: |
+          docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" . --platform linux/amd64
+          docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+
 
       - name: Exit Pipeline
         run: exit 1
