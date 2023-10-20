@@ -166,7 +166,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" . --platform linux/amd64
-          docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}":${{ github.sha }}"
+          docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
 
 
       - name: Exit Pipeline
