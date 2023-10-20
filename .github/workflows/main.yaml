@@ -111,13 +111,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Remove this when done
       - name: Echo refs
         run: echo "${{ github.ref }}"
            
       # Old
-      # - name: Set up Docker
-      #   uses: docker/setup-docker@v1
-
       # Follow this guide on logging in with docker https://docs.github.com/en/actions/publishing-packages/publishing-docker-images#publishing-images-to-github-packages
       # Can also look at these
         # https://docs.docker.com/build/ci/github-actions/
@@ -130,6 +128,17 @@ jobs:
       #     if [ "ADD_ENVIRONMENT_HERE" == "production" ]; then docker tag "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:ADD_COMMIT_TAG_HERE" "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"; fi
       #     docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
       #   if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
+
+
+      - name: Check Environment
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "Running in Pull Request environment"
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "Running in Main (Production) environment"
+          else
+            echo "Running in Other environment"
+          fi
 
       - name: Log in to the Container registry
         uses: docker/login-action@v1
@@ -144,13 +153,24 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Exit
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v1
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Exit Pipeline
         run: exit 1
 
   deploy:
     runs-on: ubuntu-latest
     needs: build-docker
     steps:
+      - name: Exit Pipeline
+        run: exit 1
+
       - name: Checkout code
         uses: actions/checkout@v2
 
