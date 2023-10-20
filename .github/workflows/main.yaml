@@ -112,8 +112,10 @@ jobs:
         uses: actions/checkout@v2
 
       # Remove this when done
-      - name: Echo refs
-        run: echo "${{ github.ref }}"
+      - name: Echo refs and sha
+        run: |
+          echo "${{ github.ref }}"
+          echo "${{ github.sha }}"
            
       # Old
       # Follow this guide on logging in with docker https://docs.github.com/en/actions/publishing-packages/publishing-docker-images#publishing-images-to-github-packages
