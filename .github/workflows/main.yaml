@@ -111,37 +111,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Remove this when done
-      - name: Echo refs and sha
-        run: |
-          echo "${{ github.ref }}"
-          echo "${{ github.sha }}"
-           
-      # Old
-      # Follow this guide on logging in with docker https://docs.github.com/en/actions/publishing-packages/publishing-docker-images#publishing-images-to-github-packages
-      # Can also look at these
-        # https://docs.docker.com/build/ci/github-actions/
-        # https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action
-
-      # - name: Build and push Docker image in staging
-      #   run: |
-      #     docker login -u ${{ github.actor }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ env.REGISTRY }}
-      #     docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" . --platform linux/amd64
-      #     if [ "ADD_ENVIRONMENT_HERE" == "production" ]; then docker tag "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:ADD_COMMIT_TAG_HERE" "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"; fi
-      #     docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
-      #   if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
-
-
-      - name: Check Environment
-        run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "Running in Pull Request environment"
-          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            echo "Running in Main (Production) environment"
-          else
-            echo "Running in Other environment"
-          fi
-
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with: 
@@ -154,14 +123,6 @@ jobs:
         uses: docker/metadata-action@v1
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@v1
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
 
       - name: Build and push Docker image
         run: |
