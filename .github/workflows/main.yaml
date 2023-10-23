@@ -110,7 +110,7 @@ jobs:
   build-docker:
     runs-on: ubuntu-latest
     needs: [build-assets, prettier, eslint, stylelint]
-    if: startsWith(github.ref_name, 'v') && !contains(substring(github.ref, 11), ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
+    if: startsWith(github.ref_name, 'v') && && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -150,7 +150,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build-docker
-    if: startsWith(github.ref_name, 'v') && !contains(substring(github.ref, 11), ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
+    if: startsWith(github.ref_name, 'v') && && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
