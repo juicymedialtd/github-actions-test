@@ -23,10 +23,10 @@ jobs:
     steps:
       - name: Set environment variables
         run: |
-          if [[ ${{ github.ref_name }} =~ /^v(\S)+-production/ ]]; then
+          if [[ ${{ github.ref_name }} =~ ^v[^\s]+-production$ ]]; then
             echo "Production"
             echo "ENVIRONMENT=production" >> $GITHUB_ENV
-          elif [[ ${{ github.ref_name }} =~ ^v(\S)+-stage ]]; then
+          elif [[ ${{ github.ref_name }} =~ ^v[^\s]+-stage$ ]]; then
             echo "Staging"
             echo "ENVIRONMENT=stage" >> $GITHUB_ENV
           else
