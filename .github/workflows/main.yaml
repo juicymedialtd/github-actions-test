@@ -1,4 +1,4 @@
-#Test with staging
+#Test with tag
 name: CI/CD Workflow
 
 env:
