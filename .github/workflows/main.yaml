@@ -27,7 +27,7 @@ jobs:
       - name: Echo tag and exit
         run: |
           VERSION=${{ github.ref_name }}
-          echo "VERSION=${VERSION:1}"
+          echo "VERSION=${{VERSION:1}}"
           exit 1
 
       - name: Set up Node.js
