@@ -18,16 +18,31 @@ on:
       - closed
 
 jobs:
+  setup-variabkes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set environment variables
+        run: |
+          if [[ "${{ github.ref_name }}" =~ ^v(\S)+-production ]]; then
+            echo "Production"
+            echo "ENVIRONMENT=production" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" =~ ^v(\S)+-stage ]]; then
+            echo "Staging"
+            echo "ENVIRONMENT=stage" >> $GITHUB_ENV
+          else
+            echo "Undefined environment in tag"
+            echo "ENVIRONMENT=undefined" >> $GITHUB_ENV
+          fi
+
   npm:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Echo tag and exit
+      - name: Print environment variable and exit
         run: |
-          VERSION=${{ github.ref_name }}
-          echo "Modified Ref Name: $(echo "${{ github.ref_name }}" | cut -c2-)"
+          echo "Production Flag: ${{ env.ENVIRONMENT }}"
           exit 1
 
       - name: Set up Node.js
@@ -135,10 +150,8 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" . --platform linux/amd64
-          if
-          [ ${{ github.ref_name }} =~ /^v(\S)+-production/ ]; then docker tag "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}" "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"; 
-          fi
-          docker push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          if [ ${{ github.ref_name }} =~ /^v(\S)+-production/ ]; then docker tag "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ $(echo "${{ github.ref_name }}" | cut -c2-) }}" "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"; fi
+          docker push --all-tags "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
   deploy:
     runs-on: ubuntu-latest
