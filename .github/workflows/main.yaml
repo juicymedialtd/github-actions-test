@@ -143,7 +143,7 @@ jobs:
         run: |
           docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TRIMMED_GITHUB_REF }}" -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT }}" .  --platform linux/amd64
           if [ "${{ env.ENVIRONMENT }}" == "production" ]; then docker tag "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TRIMMED_GITHUB_REF }}" "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"; fi
-          docker push --all-tags "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker push --all-tags "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
 
   deploy:
     runs-on: ubuntu-latest
