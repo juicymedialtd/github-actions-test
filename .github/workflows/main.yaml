@@ -34,9 +34,12 @@ jobs:
             echo "ENVIRONMENT=undefined" >> $GITHUB_ENV
           fi
 
+          echo "TRIMMED_GITHUB_REF=$(echo "${{ github.ref_name }}" | cut -c2-)" >> $GITHUB_ENV
+
       - name: Print environment variable and exit
         run: |
           echo "Production Flag: ${{ env.ENVIRONMENT }}"
+          echo "Trimmed Name: ${{ env.TRIMMED_GITHUB_REF }}"
           exit 1
 
   npm:
