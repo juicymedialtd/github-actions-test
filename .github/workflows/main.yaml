@@ -18,7 +18,7 @@ on:
       - closed
 
 jobs:
-  setup-variabkes:
+  setup-variables:
     runs-on: ubuntu-latest
     steps:
       - name: Set environment variables
@@ -36,6 +36,7 @@ jobs:
 
   npm:
     runs-on: ubuntu-latest
+    needs: setup-variables
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -150,7 +151,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" . --platform linux/amd64
-          if [ ${{ github.ref_name }} =~ /^v(\S)+-production/ ]; then docker tag "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ $(echo "${{ github.ref_name }}" | cut -c2-) }}" "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"; fi
+          if [ ${{ github.ref_name }} =~ /^v(\S)+-production/ ]; then docker tag "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}" "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"; fi
           docker push --all-tags "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
   deploy:
