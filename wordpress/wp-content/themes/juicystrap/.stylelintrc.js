@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ["stylelint-config-standard-scss"],
+  extends: ["stylelint-config-sass-guidelines"],
   plugins: ["stylelint-no-unsupported-browser-features"],
   rules: {
     "selector-class-pattern": [
