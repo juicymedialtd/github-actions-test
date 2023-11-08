@@ -1,4 +1,4 @@
-#Draft test open
+#Draft test
 name: CI/CD Workflow
 
 env:
@@ -74,11 +74,7 @@ jobs:
   eslint:
     runs-on: ubuntu-latest
     needs: npm
-    if: github.event_name == 'pull_request' &&
-      (
-        (github.event.pull_request.draft == false || github.event.pull_request.draft == null) &&
-        ${{ !(startsWith(github.event.pull_request.title, 'WIP:') || startsWith(github.event.pull_request.title, 'Draft:')) }}
-      )
+    if: github.event.pull_request.draft == false || github.event.pull_request.draft == null
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -96,11 +92,7 @@ jobs:
   stylelint:
     runs-on: ubuntu-latest
     needs: npm
-    if: github.event_name == 'pull_request' &&
-      (
-        (github.event.pull_request.draft == false || github.event.pull_request.draft == null) &&
-        ${{ !(startsWith(github.event.pull_request.title, 'WIP:') || startsWith(github.event.pull_request.title, 'Draft:')) }}
-      )
+    if: github.event.pull_request.draft == false || github.event.pull_request.draft == null
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
