@@ -91,7 +91,11 @@ jobs:
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
           npm run lint:js
-        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
+        if: github.event_name == 'pull_request' &&
+          (
+            (github.event.pull_request.draft == false || github.event.pull_request.draft == null) &&
+            ${{ !(startsWith(github.event.pull_request.title, 'WIP:') || startsWith(github.event.pull_request.title, 'Draft:')) }}
+          )
 
   stylelint:
     runs-on: ubuntu-latest
@@ -109,7 +113,11 @@ jobs:
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
           npm run lint:style
-        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed')
+        if: github.event_name == 'pull_request' &&
+          (
+            (github.event.pull_request.draft == false || github.event.pull_request.draft == null) &&
+            ${{ !(startsWith(github.event.pull_request.title, 'WIP:') || startsWith(github.event.pull_request.title, 'Draft:')) }}
+          )
 
   build-docker:
     runs-on: ubuntu-latest
