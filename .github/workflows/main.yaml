@@ -52,7 +52,7 @@ jobs:
         id: cache-primes
         uses: actions/cache@v3
         with:
-          cache-dependency-path: ./wordpress/wp-content/themes/juicystrap/package-lock.json
+          path: "npm"
           key: ${{ runner.os }}-primes
 
       - name: Checkout code
