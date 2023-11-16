@@ -29,7 +29,7 @@ jobs:
         uses: actions/cache@v3
         with:
           node-version: 20
-          path: 'npm'
+          path: node_modules
           cache-dependency-path: ./wordpress/wp-content/themes/juicystrap/package-lock.json
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
@@ -51,9 +51,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/cache@v3
         with:
-          node-version: 20
-          path: 'npm'
-          cache-dependency-path: ./wordpress/wp-content/themes/juicystrap/package-lock.json
+          path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
