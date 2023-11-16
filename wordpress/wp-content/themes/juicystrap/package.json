@@ -13,6 +13,7 @@
     "watch-poll": "mix watch -- --watch-options-poll=1000",
     "hot": "mix watch --hot",
     "production": "mix --production",
+    "prettier": "prettier . --write",
     "lint:js": "eslint '**/*.?(?(m)js|vue)'",
     "lint:style": "stylelint '**/*.?(s)css'",
     "lint:prettier": "prettier --check ."
