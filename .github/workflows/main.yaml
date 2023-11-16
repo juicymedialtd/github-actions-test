@@ -29,8 +29,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 20
-
-      - name: Install dependencies
+          cache: 'npm'
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
           rm -rf node_modules
