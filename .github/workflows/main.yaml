@@ -53,7 +53,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: "npm"
-          key: ${{ runner.os }}-build-
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Checkout code
         uses: actions/checkout@v2
