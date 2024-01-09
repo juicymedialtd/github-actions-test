@@ -52,6 +52,11 @@ jobs:
           cache: "npm"
           cache-dependency-path: './wordpress/wp-content/themes/juicystrap/package-lock.json'
 
+      - name: Install dependencies
+        run: |
+          cd ./wordpress/wp-content/themes/juicystrap
+          npm install
+
       - name: Build assets
         run: |
           cd ./wordpress/wp-content/themes/juicystrap
