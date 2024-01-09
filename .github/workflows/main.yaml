@@ -29,13 +29,8 @@ jobs:
         uses: actions/cache@v3
         with:
           node-version: 20
-          path: node_modules
-          cache-dependency-path: ./wordpress/wp-content/themes/juicystrap/package-lock.json
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          cache: "npm"
+          cache-dependency-path: package-lock.json
 
 
       - name: Install dependencies
