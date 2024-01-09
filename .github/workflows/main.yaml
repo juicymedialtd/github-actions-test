@@ -65,7 +65,7 @@ jobs:
   prettier:
     runs-on: ubuntu-latest
     needs: npm
-    if: github.event.pull_request.draft == false || github.event.pull_request.draft == null
+    # if: github.event.pull_request.draft == false || github.event.pull_request.draft == null
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -83,7 +83,7 @@ jobs:
   eslint:
     runs-on: ubuntu-latest
     needs: npm
-    if: github.event.pull_request.draft == false || github.event.pull_request.draft == null
+    # if: github.event.pull_request.draft == false || github.event.pull_request.draft == null
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -101,7 +101,7 @@ jobs:
   stylelint:
     runs-on: ubuntu-latest
     needs: npm
-    if: github.event.pull_request.draft == false || github.event.pull_request.draft == null
+    # if: github.event.pull_request.draft == false || github.event.pull_request.draft == null
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -119,7 +119,7 @@ jobs:
   build-docker:
     runs-on: ubuntu-latest
     needs: [build-assets, prettier, eslint, stylelint]
-    if: startsWith(github.ref_name, 'v') && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
+    # if: startsWith(github.ref_name, 'v') && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -159,7 +159,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build-docker
-    if: startsWith(github.ref_name, 'v') && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
+    # if: startsWith(github.ref_name, 'v') && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -174,4 +174,4 @@ jobs:
       - name: Deploy to AWS ECS
         run: |
           aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --force-new-deployment --no-cli-pager
-        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event_name != 'delete')
+        # if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event_name != 'delete')
