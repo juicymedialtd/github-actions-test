@@ -142,8 +142,7 @@ jobs:
     needs: [build-assets, prettier, eslint, stylelint]
     if: startsWith(github.ref_name, 'v') && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
     
-    permissions:
-      permissions: write-all
+    permissions: write-all
     
     steps:
       - name: Checkout code
