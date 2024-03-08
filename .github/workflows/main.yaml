@@ -181,10 +181,11 @@ jobs:
           docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TRIMMED_GITHUB_REF }}" -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT }}" .  --platform linux/amd64
           if [ "${{ env.ENVIRONMENT }}" == "production" ]; then docker tag "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TRIMMED_GITHUB_REF }}" "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"; fi
           docker push --all-tags "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
+          image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
 
