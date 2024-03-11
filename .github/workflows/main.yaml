@@ -202,8 +202,8 @@ jobs:
     if: startsWith(github.ref_name, 'v') && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
     
     permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read  # This is required for actions/checkout
+      id-token: write
+      contents: read 
 
     steps:
       - name: Checkout code
