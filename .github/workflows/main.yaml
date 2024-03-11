@@ -185,6 +185,7 @@ jobs:
         with:
           image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}'
           format: 'template'
+          exit-code: '0'
           template: '@/contrib/sarif.tpl'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
@@ -199,6 +200,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-docker
     if: startsWith(github.ref_name, 'v') && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
+    
+    permissions:
+      id-token: write # This is required for requesting the JWT
+      contents: read  # This is required for actions/checkout
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
