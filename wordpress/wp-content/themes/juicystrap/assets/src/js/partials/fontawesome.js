@@ -1,6 +1,6 @@
-import {library, dom} from '@fortawesome/fontawesome-svg-core';
+import { library, dom } from "@fortawesome/fontawesome-svg-core";
 
-import {faCaretDown, faCaretUp} from '@fortawesome/pro-solid-svg-icons';
+import { faCaretDown, faCaretUp } from "@fortawesome/pro-solid-svg-icons";
 
 // import {
 //   faLinkedinIn,
