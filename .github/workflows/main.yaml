@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -43,7 +43,7 @@ jobs:
     needs: npm
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -68,7 +68,7 @@ jobs:
     if: github.event.pull_request.draft == false || github.event.pull_request.draft == null
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -93,7 +93,7 @@ jobs:
     if: github.event.pull_request.draft == false || github.event.pull_request.draft == null
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -118,7 +118,7 @@ jobs:
     if: github.event.pull_request.draft == false || github.event.pull_request.draft == null
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -142,11 +142,13 @@ jobs:
     needs: [build-assets, prettier, eslint, stylelint]
     if: startsWith(github.ref_name, 'v') && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
     
-    permissions: write-all
+    permissions:
+      id-token: write
+      contents: write
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set environment variables
         run: |
@@ -162,7 +164,7 @@ jobs:
           echo "TRIMMED_GITHUB_REF=$(echo "${{ github.ref_name }}" | cut -c2-)" >> $GITHUB_ENV
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with: 
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -170,7 +172,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v1
+        uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
@@ -207,7 +209,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -232,7 +234,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v3
@@ -251,7 +253,7 @@ jobs:
       run: aws ecs wait services-stable --cluster $ECS_CLUSTER --service $ECS_SERVICE
 
     - name: Check for previous step success
-      if: ${{ failure() }}
-      run: echo "ECS service did not stabilize after retries."
+      if: failure()
+      run: echo "ECS service did not stabilize and therefore did NOT deploy."
 
 
