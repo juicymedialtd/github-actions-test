@@ -6,9 +6,6 @@
  * @package WordPress
  */
 
-echo 'hello';
-die();
-
 /**
  * Tells WordPress to load the WordPress theme and output it.
  *
