@@ -248,10 +248,7 @@ jobs:
       env:
         ECS_CLUSTER: ${{ env.ECS_CLUSTER }}
         ECS_SERVICE: ${{ env.ECS_SERVICE }}
-      run: |
-        for i in {1..1}; do
-          aws ecs wait services-stable --cluster $ECS_CLUSTER --service $ECS_SERVICE && break || sleep 600;
-        done
+      run: aws ecs wait services-stable --cluster $ECS_CLUSTER --service $ECS_SERVICE
 
     - name: Check for previous step success
       if: ${{ failure() }}
