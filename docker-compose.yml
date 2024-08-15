@@ -14,10 +14,7 @@ services:
     ports:
       - "32080:80"
     volumes:
-      - wordpress:/var/www/html
-      - ./wordpress/wp-config.php:/var/www/html/wp-config.php
-      - ./wordpress/.htaccess:/var/www/html/.htaccess
-      - ./wordpress/wp-content:/var/www/html/wp-content
+      - ./wordpress:/var/www/html
 
   db:
     image: mysql:8.0
@@ -39,10 +36,7 @@ services:
       - wordpress
     user: "33:33"
     volumes:
-      - wordpress:/var/www/html
-      - ./wordpress/wp-config.php:/var/www/html/wp-config.php
-      - ./wordpress/.htaccess:/var/www/html/.htaccess
-      - ./wordpress/wp-content:/var/www/html/wp-content
+      - ./wordpress:/var/www/html
     profiles:
       - wp-cli
 
@@ -51,6 +45,3 @@ services:
     restart: unless-stopped
     ports:
       - "32082:8025" # web ui
-
-volumes:
-  wordpress:

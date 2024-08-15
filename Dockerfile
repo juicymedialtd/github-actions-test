@@ -1,4 +1,4 @@
-FROM wordpress:6.3.1-php8.2
+FROM wordpress:6.6-php8.3
 
 RUN apt-get update \
     && apt-get install -y nano vim
@@ -20,6 +20,9 @@ RUN rm -rf /usr/src/wordpress/wp-content/*
 COPY wordpress /usr/src/wordpress
 
 COPY docker-entrypoint-wp.sh /usr/local/bin/
+
+# Mark /var/www/html as a volume - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/bind-mounts.html
+VOLUME ["/var/www/html"]
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint-wp.sh"]
 CMD ["apache2-foreground"]
