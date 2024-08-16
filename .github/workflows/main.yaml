@@ -3,10 +3,9 @@ name: CI/CD Workflow
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{github.repository}}
+  IMAGE_REPOSITORY: ${{github.repository}}
+  IMAGE_NAME: 'wordpress'
   AWS_DEFAULT_REGION: 'eu-west-2'
-  ECS_CLUSTER: 'wordpress-terraform-dev'
-  ECS_SERVICE: 'wordpress-terraform-dev'
 
 on:
   push:
@@ -141,9 +140,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-assets, prettier, eslint, stylelint]
     if: startsWith(github.ref_name, 'v') && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
-    
+
     permissions: write-all
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -163,7 +162,7 @@ jobs:
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
-        with: 
+        with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -172,18 +171,18 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
         run: |
-          docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TRIMMED_GITHUB_REF }}" -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT }}" .  --platform linux/amd64
-          if [ "${{ env.ENVIRONMENT }}" == "production" ]; then docker tag "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TRIMMED_GITHUB_REF }}" "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"; fi
-          docker push --all-tags "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.TRIMMED_GITHUB_REF }}" -t "${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.ENVIRONMENT }}" .  --platform linux/amd64
+          if [ "${{ env.ENVIRONMENT }}" == "production" ]; then docker tag "${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.TRIMMED_GITHUB_REF }}" "${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}:latest"; fi
+          docker push --all-tags "${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}"
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}'
+          image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}/${{ env.IMAGE_NAME }}'
           format: 'template'
           exit-code: '0'
           template: '@/contrib/sarif.tpl'
@@ -200,10 +199,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-docker
     if: startsWith(github.ref_name, 'v') && !contains(github.ref_name, ' ') && (endsWith(github.ref_name, '-stage') || endsWith(github.ref_name, '-production'))
-    
+
     permissions:
       id-token: write
-      contents: read 
+      contents: read
 
     steps:
       - name: Checkout code
