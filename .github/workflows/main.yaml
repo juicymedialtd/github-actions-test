@@ -25,7 +25,7 @@ jobs:
       - name: Set Environment
         id: set_env
         run: |
-          echo ${github}
+          echo ${github.event_name}
 
 #  npm:
 #    runs-on: ubuntu-latest
