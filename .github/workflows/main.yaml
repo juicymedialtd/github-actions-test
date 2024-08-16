@@ -6,6 +6,7 @@ env:
   IMAGE_REPOSITORY: ${{github.repository}}
   IMAGE_NAME: 'wordpress'
   AWS_DEFAULT_REGION: 'eu-west-2'
+  CI_ENVIRONMENT: ${{ github.ref_type == 'tag' && (endsWith(github.ref_name, '-production') && 'production' || endsWith(github.ref_name, '-stage') && 'stage') || null }}
 
 on:
   push:
@@ -21,6 +22,7 @@ on:
 jobs:
   one:
     runs-on: ubuntu-latest
+    environment: ${env.CI_ENVIRONMENT}
     steps:
       - name: Dump GitHub context
         env:
@@ -46,7 +48,10 @@ jobs:
         env:
           MATRIX_CONTEXT: ${{ toJson(matrix) }}
         run: echo "$MATRIX_CONTEXT"
-
+      - name: Dump env context
+        env:
+          ENV_CONTEXT: ${{ toJson(env) }}
+        run: echo "$ENV_CONTEXT"
       - name: Show default environment variables
         run: |
           echo "The job_id is: $GITHUB_JOB"   # reference the default environment variables
